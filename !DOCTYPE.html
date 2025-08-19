@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Traveo — Global Travel Ally</title>
+  <meta name="description" content="Traveo: real-time scam alerts, verified transport, AI itineraries, SOS, and safety maps."/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --bg:#060A12;
+      --neon:#0EF2E3;
+      --pink:#FF4FD8;
+      --glass:rgba(255,255,255,0.08);
+      --muted:#BFD3EA;
+      --text:#E8F3FF;
+      --radius:14px;
+      --shadow:0 12px 40px rgba(0,0,0,0.35);
+      --glow:0 0 32px rgba(14,242,227,0.35);
+      --maxw:1200px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);background:var(--bg);scroll-behavior:smooth}
+
+    /* Animated background + grid */
+    .bg-animated{position:fixed;inset:0;z-index:-3;background:
+      radial-gradient(40vw 40vw at 10% 20%, rgba(14,242,227,.18), transparent 60%),
+      radial-gradient(50vw 50vw at 80% 10%, rgba(255,79,216,.14), transparent 65%),
+      radial-gradient(60vw 60vw at 50% 90%, rgba(13,182,178,.16), transparent 60%),
+      #060A12}
+    .bg-animated::after{content:"";position:absolute;inset:-20%;background:
+      conic-gradient(from 90deg at 50% 50%, rgba(255,255,255,0.04), transparent 30%, rgba(255,255,255,0.05));
+      animation:spin 40s linear infinite;mix-blend-mode:overlay}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .gridlines{position:fixed;inset:0;z-index:-2;pointer-events:none;background-image:
+      linear-gradient(to right, rgba(14,242,227,0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(14,242,227,0.06) 1px, transparent 1px);
+      background-size:60px 60px;mask:linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)}
+
+    /* Header */
+    .header{position:sticky;top:0;z-index:50;background:rgba(6,10,18,0.55);backdrop-filter:blur(10px);border-bottom:1px solid rgba(14,242,227,0.12)}
+    .nav{max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;gap:20px;padding:14px 20px}
+    .logo{font-weight:700;letter-spacing:.3px}
+    .logo .dot{color:var(--neon);text-shadow:var(--glow)}
+    .spacer{flex:1}
+    .menu{display:flex;gap:18px}
+    .menu a{color:#CFE6FF}
+    .menu a:hover{color:var(--neon);text-shadow:var(--glow)}
+    .store-btns{display:flex;gap:10px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.18);background:var(--glass);color:var(--text);cursor:pointer;box-shadow:var(--shadow);transition:.2s}
+    .btn:hover{box-shadow:var(--glow), var(--shadow);transform:translateY(-1px)}
+    .btn-primary{background:linear-gradient(135deg, rgba(14,242,227,0.25), rgba(255,79,216,0.2)); border-color:rgba(14,242,227,0.35)}
+    .btn-ghost{border-style:dashed;border-color:rgba(14,242,227,0.35)}
+    .burger{display:none;background:none;border:none;font-size:24px;color:var(--text)}
+    @media(max-width:960px){
+      .menu,.store-btns{display:none}
+      .burger{display:block;margin-left:auto}
+      .drawer{position:fixed;inset:0 0 0 auto;width:84vw;max-width:360px;background:rgba(6,10,18,.9);backdrop-filter:blur(12px);border-left:1px solid rgba(14,242,227,0.2);padding:20px;transform:translateX(100%);transition:.25s ease;z-index:80}
+      .drawer.open{transform:translateX(0)}
+      .drawer .menu,.drawer .store-btns{display:flex;flex-direction:column}
+      .drawer .menu a{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
+      .drawer .close{background:none;border:none;font-size:24px;color:var(--text);margin-left:auto}
+    }
+
+    /* Sections */
+    section{padding:80px 20px}
+    .container{max-width:var(--maxw);margin:0 auto}
+
+    /* Hero */
+    .hero{position:relative;background:
+      linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.35)),
+      url('https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat fixed;
+      padding:120px 20px 80px;border-bottom:1px solid rgba(14,242,227,0.15)}
+    .hero-inner{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center}
+    .kicker{color:var(--neon);font-weight:700;text-shadow:0 0 12px rgba(14,242,227,.4)}
+    .hero h1{font-size:44px;line-height:1.12;margin:10px 0 12px}
+    .hero p{color:#CFE6FF;margin:0 0 18px;max-width:650px}
+    .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 8px}
+    .hero-badges{display:flex;align-items:center;gap:12px;color:#B6CCE6;font-size:14px}
+    .badge{display:inline-block;border:1px solid rgba(14,242,227,0.35);background:rgba(14,242,227,0.12);color:#CFFBF7;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:600}
+    .mockups{position:relative;min-height:380px}
+    .phone{position:absolute;top:0;right:10%;width:240px;border-radius:28px;box-shadow:0 18px 36px rgba(0,0,0,.45)}
+    .phone.p2{top:40px;right:38%;transform:rotate(-6deg)}
+    .phone.p3{top:120px;right:-2%;transform:rotate(6deg)}
+    @media(max-width:960px){
+      .hero-inner{grid-template-columns:1fr}
+      .mockups{order:-1;display:flex;justify-content:center;gap:14px;min-height:auto}
+      .phone{position:relative;right:auto;top:auto;width:34vw;max-width:200px;transform:none}
+    }
+
+    /* Cards / Grids */
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    @media(max-width:960px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--glass);border:1px solid rgba(255,255,255,0.14);backdrop-filter:blur(10px);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+    .card h3{margin:10px 0 6px;font-size:18px}
+    .card p{margin:0;color:#CFE6FF;font-size:14px}
+
+    /* Carousel */
+    .carousel{position:relative;overflow:hidden;border-radius:16px;background:var(--glass);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.14);box-shadow:var(--shadow)}
+    .slides{display:flex;transition:transform .35s ease}
+    .slide{min-width:100%;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center}
+    .slide .cap{color:#CFE6FF}
+    .car-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);color:var(--text);border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow)}
+    .car-btn.prev{left:10px}
+    .car-btn.next{right:10px}
+    @media(max-width:960px){.slide{grid-template-columns:1fr}}
+
+    /* Testimonials */
+    .testis{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    @media(max-width:960px){.testis{grid-template-columns:1fr}}
+    .testi{background:var(--glass);border:1px solid rgba(255,255,255,0.14);border-radius:16px;box-shadow:var(--shadow);padding:18px;display:flex;gap:14px}
+    .avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,.2)}
+    .stars{color:#f7b500;font-size:16px}
+
+    /* Download band */
+    .download{position:relative;overflow:hidden;background:linear-gradient(180deg, rgba(14,242,227,0.08), rgba(255,79,216,0.07));border-top:1px solid rgba(255,255,255,0.12);border-bottom:1px solid rgba(255,255,255,0.12)}
+    .download .container{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}
+    @media(max-width:960px){.download .container{grid-template-columns:1fr}}
+
+    /* Footer */
+    footer{background:rgba(6,10,18,.9);backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,0.12);color:#BFD3EA}
+    footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:16px}
+    @media(max-width:960px){footer .cols{grid-template-columns:1fr 1fr}}
+    .reveal{opacity:0;transform:translateY(14px);transition:.4s ease}
+    .reveal.in{opacity:1;transform:none}
+    :focus-visible{outline:3px solid var(--neon);outline-offset:2px}
+
+    /* Accordion */
+    .accordion{display:grid;gap:10px}
+    .acc-item{border:1px solid rgba(255,255,255,0.14);border-radius:12px;background:var(--glass)}
+    .acc-head{padding:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+    .acc-body{display:none;padding:0 14px 14px;color:#CFE6FF}
+    .acc-item.open .acc-body{display:block}
+
+    /* Login Modal */
+    .login-backdrop{position:fixed;inset:0;backdrop-filter:blur(10px);background:rgba(6,10,18,0.65);display:none;align-items:center;justify-content:center;z-index:1000}
+    .login-backdrop.show{display:flex}
+    .login-card{width:min(92vw, 460px);background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));border:1px solid rgba(255,255,255,0.22);border-radius:18px;padding:22px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .login-card::before{content:"";position:absolute;inset:-50% -50% auto auto;width:200%;height:200%;background:
+      radial-gradient(30% 30% at 20% 20%, rgba(14,242,227,0.25), transparent 60%),
+      radial-gradient(30% 30% at 80% 30%, rgba(255,79,216,0.2), transparent 60%);filter:blur(40px);z-index:-1}
+    .login-title{margin:0 0 6px;font-size:22px;font-weight:700}
+    .login-sub{margin:0 0 14px;color:#CFE6FF}
+    .field{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+    .field label{font-size:13px;color:#CFE6FF}
+    .field input{padding:12px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.25);color:#fff}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+    .row label{font-size:13px;color:#CFE6FF;display:flex;align-items:center;gap:8px}
+    .err{color:#ffb3c7;min-height:18px;font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+  <div class="gridlines"></div>
+
+  <!-- Header -->
+  <header class="header" id="home">
+    <nav class="nav" aria-label="Primary">
+      <div class="logo">traveo<span class="dot">•</span></div>
+      <div class="menu" role="menubar">
+        <a href="#features" role="menuitem">Features</a>
+        <a href="#how" role="menuitem">How It Helps</a>
+        <a href="#safety" role="menuitem">Safety</a>
+        <a href="#community" role="menuitem">Preview</a>
+        <a href="#reviews" role="menuitem">Reviews</a>
+        <a href="#download" role="menuitem">Download</a>
+      </div>
+      <div class="spacer"></div>
+      <div class="store-btns">
+        <a class="btn btn-primary" href="#">App Store</a>
+        <a class="btn" href="#">Google Play</a>
+        <button id="installDummyHeader" class="btn btn-ghost">Install (Demo)</button>
+      </div>
+      <button class="burger" aria-label="Open menu">☰</button>
+    </nav>
+    <div class="drawer" id="drawer" aria-hidden="true">
+      <button class="close" aria-label="Close menu">×</button>
+      <nav aria-label="Mobile">
+        <div class="menu">
+          <a href="#features">Features</a>
+          <a href="#how">How It Helps</a>
+          <a href="#safety">Safety</a>
+          <a href="#community">Preview</a>
+          <a href="#reviews">Reviews</a>
+          <a href="#download">Download</a>
+        </div>
+        <div class="store-btns" style="margin-top:14px">
+          <a class="btn btn-primary" href="#">App Store</a>
+          <a class="btn" href="#">Google Play</a>
+          <button id="installDummyDrawer" class="btn btn-ghost">Install (Demo)</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div>
+        <div class="kicker">Your Global Travel Ally — Traveo.</div>
+        <h1>Futuristic safety for real-world travel.</h1>
+        <p>Real-time scam alerts, verified transport, AI itineraries, SOS, and safety maps. Built for solo travelers, students, and explorers.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#">Download for iOS</a>
+          <a class="btn" href="#">Download for Android</a>
+          <button class="btn" id="demoBtn">Watch Demo Video</button>
+        </div>
+        <div class="hero-badges">
+          <span class="badge">Free • No ads</span>
+          <span>40+ countries</span>
+          <span>Multilingual</span>
+        </div>
+      </div>
+      <div class="mockups" aria-hidden="true">
+        <img class="phone p1" src="https://images.unsplash.com/photo-1549924231-f129b911e442?q=80&w=600&auto=format&fit=crop" alt="App mockup 1">
+        <img class="phone p2" src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600&auto=format&fit=crop" alt="App mockup 2">
+        <img class="phone p3" src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600&auto=format&fit=crop" alt="App mockup 3">
+      </div>
+    </div>
+  </section>
+
+  <!-- Core + More Features -->
+  <section id="features" class="reveal">
+    <div class="container">
+      <h2 class="h2">Core Features</h2>
+      <p style="color:#CFE6FF;margin-top:6px">Explore confidently in 40+ countries with real-time intelligence and verified services.</p>
+      <div class="grid" style="margin-top:14px">
+        <div class="card"><h3>🔍 Scam Detection in Real Time</h3><p>Instant alerts about common scams nearby.</p></div>
+        <div class="card"><h3>🚖 Verified Local Transport</h3><p>Trusted rides like Uber, Ola, Grab, and more.</p></div>
+        <div class="card"><h3>🧭 AI Tour Planner</h3><p>Smart itineraries tailored to pace and safety.</p></div>
+        <div class="card"><h3>🆘 SOS + Live Location</h3><p>One‑tap SOS with encrypted live tracking.</p></div>
+        <div class="card"><h3>🌐 Multilingual</h3><p>English, Hindi, Spanish, French.</p></div>
+        <div class="card"><h3>🔒 Safety Scores & Risk Maps</h3><p>Area insights to avoid hotspots.</p></div>
+      </div>
+
+      <h3 style="margin:26px 0 10px">More Features</h3>
+      <div class="grid">
+        <div class="card"><h3>💳 Secure Payments</h3><p>In‑app booking, safe gateways, refund support.</p></div>
+        <div class="card"><h3>📶 Offline Mode</h3><p>Access essentials without internet.</p></div>
+        <div class="card"><h3>🛡️ Smart ID Scanner</h3><p>Capture IDs; verify via official channels.</p></div>
+        <div class="card"><h3>👥 Community Alerts</h3><p>Traveller‑verified reports and tips.</p></div>
+        <div class="card"><h3>📍 Geofenced Warnings</h3><p>Notified when entering known risk zones.</p></div>
+        <div class="card"><h3>🧾 Doc Vault</h3><p>Securely store passports and tickets.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How Traveo Helps (mapped to your prompt) -->
+  <section id="how" class="reveal">
+    <div class="container">
+      <h2 class="h2">How Traveo Helps Prevent Scams</h2>
+      <div class="grid" style="margin-top:14px">
+        <div class="card">
+          <h3>1) Verified Services & Partners</h3>
+          <p>Integrates with trusted taxis/tours, shows certifications, and reacts to suspicious feedback rapidly.</p>
+        </div>
+        <div class="card">
+          <h3>2) Location‑Based Scam Alerts</h3>
+          <p>Push warnings around active hotspots—e.g., fake tour pitches or pickpocket zones.</p>
+        </div>
+        <div class="card">
+          <h3>3) Secure In‑App Booking</h3>
+          <p>Safe payment flows via reputable processors with charge‑back support.</p>
+        </div>
+        <div class="card">
+          <h3>4) Local Knowledge Tools</h3>
+          <p>Fair taxi fare estimator, exchange rate checks, embassy & tourist police contacts.</p>
+        </div>
+        <div class="card">
+          <h3>5) Smart ID Scanner</h3>
+          <p>Photograph IDs and request verification via consulate/agency; data stays encrypted.</p>
+        </div>
+        <div class="card">
+          <h3>6) Digital Wallet + MFA</h3>
+          <p>Store essential cards under biometrics/PIN; reminders to monitor accounts.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <h3>Scam Knowledgebase (Examples)</h3>
+        <div class="accordion" id="acc">
+          <div class="acc-item">
+            <div class="acc-head"><strong>Taxi overcharging / broken meters</strong><span>+</span></div>
+            <div class="acc-body">
+              Insist on meters or agree on fare upfront. Traveo estimates fair fares and flags hotspots.
+              Sources: The Times of India, NDTV.
+            </div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-head"><strong>Fake police officers</strong><span>+</span></div>
+            <div class="acc-body">
+              Ask for ID; request station escort. Traveo stores consulate/police contacts and logs interactions privately.
+              Sources: NDTV.
+            </div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-head"><strong>ATM skimming & shoulder‑surfing</strong><span>+</span></div>
+            <div class="acc-body">
+              Prefer bank‑inside ATMs; shield PIN; monitor accounts. Traveo reminders and secure wallet tips.
+              Sources: AskFlare.
+            </div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-head"><strong>Currency‑exchange scams</strong><span>+</span></div>
+            <div class="acc-body">
+              Avoid street changers; verify rates and licenses. Traveo surfaces authorized changers.
+              Sources: AskFlare.
+            </div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-head"><strong>Fake tours/tickets</strong><span>+</span></div>
+            <div class="acc-body">
+              Book via verified vendors in‑app. Traveo shows badges and refund paths.
+              Sources: Investopedia.
+            </div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-head"><strong>“Free” bracelet/rosemary</strong><span>+</span></div>
+            <div class="acc-body">
+              Decline politely, walk away. Traveo issues proximity alerts in known areas.
+              Sources: Logds.
+            </div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-head"><strong>Distraction theft</strong><span>+</span></div>
+            <div class="acc-body">
+              Beware overly friendly setups; secure bags. Traveo warns at busy hotspots.
+              Sources: Carefree World Travelers.
+            </div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-head"><strong>Pro‑dater / romance scams</strong><span>+</span></div>
+            <div class="acc-body">
+              Don’t fund “emergency” expenses; meet in safe public places. Traveo flags patterns.
+              Sources: Wikipedia.
+            </div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-head"><strong>Dark‑web travel sites</strong><span>+</span></div>
+            <div class="acc-body">
+              Beware too‑good deals; use in‑app secure bookings. Traveo screens vendors.
+              Sources: The Wall Street Journal.
+            </div>
+          </div>
+        </div>
+        <small style="display:block;margin-top:8px;color:#CFE6FF;opacity:.85">The examples above reflect common public advice. Replace with your curated knowledgebase or API.</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOS System -->
+  <section id="safety" class="reveal">
+    <div class="container">
+      <h2 class="h2">Emergency SOS System</h2>
+      <p style="color:#CFE6FF;margin-top:6px">One‑tap activation, smart routing, live tracking, and offline fallback.</p>
+      <div class="grid" style="margin-top:14px">
+        <div class="card"><h3>1) Quick Activation</h3><p>Single tap or long‑press sends your GPS and begins assistance flow.</p></div>
+        <div class="card"><h3>2) Smart Notifications</h3><p>Automatically notifies embassy, trusted contacts, or tourist police based on location.</p></div>
+        <div class="card"><h3>3) Live Location Link</h3><p>Encrypted link updates until you stop SOS or confirm safety.</p></div>
+        <div class="card"><h3>4) Evidence Mode</h3><p>Optional periodic audio/photo capture (user‑enabled) auto‑syncs to cloud.</p></div>
+        <div class="card"><h3>5) Offline Fallback</h3><p>When offline, stores SOS text for SMS/cell fallback once signal returns.</p></div>
+        <div class="card"><h3>6) Check‑ins & Reports</h3><p>Automated check‑ins; after resolution, submit incident report to warn others.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- App Preview -->
+  <section id="community" class="reveal">
+    <div class="container">
+      <h2 class="h2">App Preview</h2>
+      <p style="color:#CFE6FF;margin-top:6px">Scam alerts, planner, safety maps, and AI chat in action.</p>
+      <div class="carousel" style="margin-top:14px" aria-roledescription="carousel">
+        <div class="slides" id="slides">
+          <div class="slide">
+            <img src="https://images.unsplash.com/photo-1518331647614-4b10b05c834e?q=80&w=1200&auto=format&fit=crop" alt="Scam alert screen">
+            <div><h3>Scam Alert Popup</h3><p class="cap">Real-time warnings nearby.</p></div>
+          </div>
+          <div class="slide">
+            <img src="https://images.unsplash.com/photo-1523473827532-4a6cbf0b2391?q=80&w=1200&auto=format&fit=crop" alt="Planner screen">
+            <div><h3>Planner UI</h3><p class="cap">Smart, personalized itineraries.</p></div>
+          </div>
+          <div class="slide">
+            <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1200&auto=format&fit=crop" alt="Safety map screen">
+            <div><h3>Safety Map</h3><p class="cap">Neighborhood risk visibility.</p></div>
+          </div>
+          <div class="slide">
+            <img src="https://images.unsplash.com/photo-1511974035430-5de47d3b95da?q=80&w=1200&auto=format&fit=crop" alt="AI chat screen">
+            <div><h3>AI Chat</h3><p class="cap">Local tips & safety norms.</p></div>
+          </div>
+        </div>
+        <button class="car-btn prev" aria-label="Previous slide" id="prev">‹</button>
+        <button class="car-btn next" aria-label="Next slide" id="next">›</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Customer Reviews -->
+  <section id="reviews" class="reveal">
+    <div class="container">
+      <h2 class="h2">What travelers say</h2>
+      <p style="color:#CFE6FF;margin-top:6px">Real stories from the Traveo community.</p>
+      <div class="testis" style="margin-top:14px">
+        <div class="testi">
+          <img class="avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop" alt="Aylin avatar">
+          <div>
+            <div class="stars">★★★★★</div>
+            <p>“Traveo helped me avoid a fake taxi scam in Istanbul. The alert popped up as I left the airport.”</p>
+            <div style="color:#CFE6FF">Aylin K., Türkiye</div>
+          </div>
+        </div>
+        <div class="testi">
+          <img class="avatar" src="https://images.unsplash.com/photo-1548142813-c348350df52b?q=80&w=200&auto=format&fit=crop" alt="Rhea avatar">
+          <div>
+            <div class="stars">★★★★★</div>
+            <p>“As a solo traveler in Delhi, the SOS + live location made me feel safe on late rides.”</p>
+            <div style="color:#CFE6FF">Rhea M., India</div>
+          </div>
+        </div>
+        <div class="testi">
+          <img class="avatar" src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=200&auto=format&fit=crop" alt="Lucas avatar">
+          <div>
+            <div class="stars">★★★★★</div>
+            <p>“The planner kept me on budget in Tokyo, and the safety scores were super helpful.”</p>
+            <div style="color:#CFE6FF">Lucas P., France</div>
+          </div>
+        </div>
+        <div class="testi">
+          <img class="avatar" src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=200&auto=format&fit=crop" alt="Sofia avatar">
+          <div>
+            <div class="stars">★★★★★</div>
+            <p>“Parents loved the check‑ins and the way Traveo shared a live link when I was out late.”</p>
+            <div style="color:#CFE6FF">Sofía G., Spain</div>
+          </div>
+        </div>
+        <div class="testi">
+          <img class="avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop" alt="Diego avatar">
+          <div>
+            <div class="stars">★★★★☆</div>
+            <p>“Geofenced alerts warned me about pickpocket spots in Barcelona—saved my phone.”</p>
+            <div style="color:#CFE6FF">Diego M., Mexico</div>
+          </div>
+        </div>
+        <div class="testi">
+          <img class="avatar" src="https://images.unsplash.com/photo-1548142813-c348350df52b?q=80&w=200&auto=format&fit=crop" alt="Hana avatar">
+          <div>
+            <div class="stars">★★★★★</div>
+            <p>“Loved the doc vault—had passport scans ready when my hostel asked.”</p>
+            <div style="color:#CFE6FF">Hana S., Japan</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download -->
+  <section id="download" class="download reveal">
+    <div class="container">
+      <div>
+        <h2 class="h2">Download Traveo</h2>
+        <p style="color:#D9F9F5;margin-top:6px">Free forever. No ads. Just safe travel.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+          <a class="btn" href="#" aria-label="Download on App Store">📲 App Store</a>
+          <a class="btn" href="#" aria-label="Get it on Google Play">📲 Google Play</a>
+          <button id="installDummy" class="btn btn-ghost" title="Download a dummy file to test">Install (Demo)</button>
+        </div>
+        <div style="color:#CFE6FF;margin-top:8px">Available in 40+ countries • Multilingual • Works offline</div>
+      </div>
+      <div>
+        <div style="color:#CFE6FF">Scan to download</div>
+        <canvas id="qr" width="180" height="180" style="background:rgba(255,255,255,.9);border-radius:12px;margin-top:8px"></canvas>
+        <small style="display:block;color:#CFE6FF;margin-top:6px">Click store buttons to update QR.</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="cols" style="padding:20px 0">
+        <div>
+          <div class="logo">traveo<span class="dot">•</span></div>
+          <div style="margin-top:6px;color:#CFE6FF">Your Smart Travel Ally.</div>
+        </div>
+        <div>
+          <h4>Menu</h4>
+          <div><a href="#home">Home</a></div>
+          <div><a href="#features">Features</a></div>
+          <div><a href="#how">How It Helps</a></div>
+          <div><a href="#safety">Safety</a></div>
+          <div><a href="#reviews">Reviews</a></div>
+          <div><a href="#download">Download</a></div>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <div><a href="#">Privacy Policy</a></div>
+          <div><a href="#">Terms</a></div>
+          <div><a href="#">Contact</a></div>
+        </div>
+        <div>
+          <h4>Controls</h4>
+          <button id="logout" class="btn btn-ghost">Log out (test login)</button>
+        </div>
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,0.12);padding:14px 0;color:#9EB6CC">
+        © <span id="year"></span> Traveo. Built for safer journeys.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Video Modal -->
+  <dialog id="videoModal" style="border:none;border-radius:16px;padding:0;max-width:900px;width:90vw">
+    <div style="position:relative;padding-top:56.25%;background:#000">
+      <iframe id="demoFrame" src="" title="Traveo Demo Video" allow="autoplay; encrypted-media" allowfullscreen
+              style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+    </div>
+    <div style="display:flex;justify-content:flex-end;padding:10px;background:rgba(6,10,18,.95);color:#CFE6FF">
+      <button id="closeVideo" class="btn">Close</button>
+    </div>
+  </dialog>
+
+  <!-- Login Modal -->
+  <div class="login-backdrop" id="loginBackdrop" aria-modal="true" role="dialog" aria-labelledby="loginTitle">
+    <form class="login-card" id="loginForm">
+      <h3 id="loginTitle" class="login-title">Welcome to Traveo</h3>
+      <p class="login-sub">Please sign in to continue. Use any values to preview.</p>
+      <div class="field">
+        <label for="user">Username</label>
+        <input id="user" name="user" type="text" placeholder="e.g., traveler01" autocomplete="username" required />
+      </div>
+      <div class="field">
+        <label for="pass">Password</label>
+        <input id="pass" name="pass" type="password" placeholder="Enter any value" autocomplete="current-password" required />
+      </div>
+      <div class="row">
+        <label><input type="checkbox" id="remember" /> Remember me</label>
+        <button class="btn btn-primary" type="submit">Login</button>
+      </div>
+      <div class="err" id="loginErr"></div>
+    </form>
+  </div>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Mobile drawer
+    const drawer = document.getElementById('drawer');
+    document.querySelector('.burger').addEventListener('click', () => {
+      drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false');
+    });
+    drawer.querySelector('.close').addEventListener('click', () => {
+      drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true');
+    });
+    drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true');
+    }));
+
+    // Reveal on scroll
+    const io = new IntersectionObserver((entries)=>entries.forEach(e=>{
+      if(e.isIntersecting) e.target.classList.add('in');
+    }), {threshold:.12});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+    // Carousel
+    const slides = document.getElementById('slides');
+    const total = slides.children.length;
+    let index = 0;
+    function go(i){ index = (i+total)%total; slides.style.transform = `translateX(-${index*100}%)`; }
+    document.getElementById('prev').onclick = ()=>go(index-1);
+    document.getElementById('next').onclick = ()=>go(index+1);
+    let auto = setInterval(()=>go(index+1), 5000);
+    ['mouseenter','focusin'].forEach(ev => slides.addEventListener(ev, ()=>clearInterval(auto)));
+
+    // Demo Video Modal
+    const modal = document.getElementById('videoModal');
+    const frame = document.getElementById('demoFrame');
+    document.getElementById('demoBtn').addEventListener('click', ()=>{
+      frame.src = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1'; // replace with real demo
+      modal.showModal();
+    });
+    document.getElementById('closeVideo').addEventListener('click', ()=>{
+      frame.src = '';
+      modal.close();
+    });
+
+    // Accordion
+    document.querySelectorAll('.acc-item .acc-head').forEach(head=>{
+      head.addEventListener('click', ()=>{
+        head.parentElement.classList.toggle('open');
+        head.querySelector('span').textContent = head.parentElement.classList.contains('open') ? '–' : '+';
+      });
+    });
+
+    // QR placeholder
+    const qrCanvas = document.getElementById('qr');
+    const ctx = qrCanvas.getContext('2d');
+    const IOS_URL = 'https://example.com/appstore';
+    const AND_URL = 'https://example.com/googleplay';
+    function drawPlaceholderQR(text){
+      ctx.fillStyle = '#fff'; ctx.fillRect(0,0,180,180);
+      ctx.fillStyle = '#000';
+      let h=0; for(let i=0;i<text.length;i++){ h = (h*31 + text.charCodeAt(i))>>>0; }
+      for(let y=0;y<18;y++){
+        for(let x=0;x<18;x++){
+          const bit = (h >> ((x+y)%24)) & 1;
+          if((bit ^ ((x*y)%3===0))){ ctx.fillRect(x*10+1,y*10+1,8,8); }
+        }
+      }
+    }
+    drawPlaceholderQR(IOS_URL);
+    document.querySelectorAll('#download a.btn').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        const use = e.currentTarget.textContent.includes('Google') ? AND_URL : IOS_URL;
+        drawPlaceholderQR(use);
+      });
+    });
+
+    // Dummy installer download
+    function downloadDummy(filename = 'traveo_dummy_install.txt'){
+      const content =
+`Traveo Demo Installer
+=====================
+This is a dummy file to verify that downloads are working.
+
+Timestamp: ${new Date().toISOString()}
+Notes: Replace this with your real installer or store link.
+`;
+      const blob = new Blob([content], {type: 'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    }
+    ['installDummy','installDummyHeader','installDummyDrawer'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.addEventListener('click', ()=>downloadDummy());
+    });
+
+    // Login Gate
+    const loginBackdrop = document.getElementById('loginBackdrop');
+    const loginForm = document.getElementById('loginForm');
+    const loginErr = document.getElementById('loginErr');
+    const REMEMBER_KEY = 'trv_logged_in';
+    function showLogin(){
+      loginBackdrop.classList.add('show');
+      document.getElementById('user').focus();
+      document.body.style.overflow = 'hidden';
+    }
+    function hideLogin(){
+      loginBackdrop.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+    if(localStorage.getItem(REMEMBER_KEY)!=='1'){ showLogin(); }
+    loginForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const u = document.getElementById('user').value.trim();
+      const p = document.getElementById('pass').value.trim();
+      const remember = document.getElementById('remember').checked;
+      if(!u || !p){ loginErr.textContent='Please enter both username and password.'; return; }
+      if(remember) localStorage.setItem(REMEMBER_KEY,'1');
+      hideLogin();
+    });
+    document.getElementById('logout').addEventListener('click', ()=>{
+      localStorage.removeItem(REMEMBER_KEY);
+      showLogin();
+    });
+
+    // Subtle parallax on hero images
+    document.addEventListener('scroll', ()=>{
+      const y = window.scrollY;
+      document.querySelectorAll('.phone').forEach((p, i)=>{
+        p.style.transform = `translateY(${y*0.05*(i+1)}px)`;
+      });
+    }, {passive:true});
+  </script>
+</body>
+</html>
